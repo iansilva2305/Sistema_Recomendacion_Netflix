@@ -16,46 +16,7 @@ El sistema se implementa completamente en AWS, utilizando una arquitectura serve
 
 El diagrama a continuación ilustra cómo los diferentes servicios de AWS trabajan juntos en esta solución:
 
-```mermaid
-flowchart TB
-    %% Definición de los servicios
-    TMDB[("API TMDB\n(Datos Películas)")] --> Lambda1
-    
-    subgraph "Ingesta y Procesamiento"
-        S3Raw[("S3\nRaw Data")] --> Lambda1
-        Lambda1["Lambda ETL"] --> S3Proc[("S3\nProcesamiento")]
-        Lambda1 --> DynamoDB1[("DynamoDB\nMetadata")]
-        EventBridge[["EventBridge\n(Trigger ETL)"]] --> StepFunc
-        StepFunc[["Step Functions\n(ETL Workflow)"]] --> Lambda1
-        S3Proc --> GlueJob["AWS Glue\n(Transformación)"]
-    end
-    
-    subgraph "Modelos de Recomendación"
-        GlueJob --> S3Mod[("S3\nModelos")]
-        S3Mod <--> Sagemaker["SageMaker\n(TF-IDF + Cosine Sim)"]
-    end
-    
-    subgraph "Servicio de Recomendación"
-        S3Proc --> Lambda2
-        S3Mod --> Lambda2
-        Lambda2["Lambda API\nRecomendaciones"] <--> DynamoDB2[("DynamoDB\nRecomendaciones")]
-        APIGateway[["API Gateway"]] --> Lambda2
-    end
-    
-    subgraph "Frontend"
-        EB["Elastic Beanstalk\n(Streamlit App)"] --> APIGateway
-        EB --> S3Proc
-        EB --> S3Mod
-    end
-    
-    subgraph "Monitoreo y Notificaciones"
-        CloudWatch["CloudWatch\n(Logs & Alarmas)"] --> SNS[["SNS\n(Notificaciones)"]]
-        Lambda1 --> CloudWatch
-        Lambda2 --> CloudWatch
-        APIGateway --> CloudWatch
-        EB --> CloudWatch
-    end
-```
+![AWS arquitectura para Netflix](/images/aws_architecture.png)
 
 ### Componentes Principales:
 
