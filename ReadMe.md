@@ -33,7 +33,7 @@ El diagrama a continuación ilustra cómo los diferentes servicios de AWS trabaj
 - API Key de TMDB (https://www.themoviedb.org/documentation/api)
 - AWS CLI configurado
 - Python 3.8 o superior
-- pip y virtualenv
+- pip y entornos virtuales (virtualenv)
 
 ## Estructura del Proyecto
 
